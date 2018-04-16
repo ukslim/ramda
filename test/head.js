@@ -2,6 +2,7 @@ var assert = require('assert');
 
 var R = require('..');
 var eq = require('./shared/eq');
+var Reducible = require('./shared/Reducible');
 
 
 describe('head', function() {
@@ -16,6 +17,13 @@ describe('head', function() {
     eq(R.head('bc'), 'b');
     eq(R.head('c'), 'c');
     eq(R.head(''), '');
+  });
+
+  it('returns the first element of an iterable', function() {
+    eq(R.head(new Reducible([1, 2, 3])), 1);
+    eq(R.head(new Reducible([2, 3])), 2);
+    eq(R.head(new Reducible([3])), 3);
+    eq(R.head(new Reducible([])), undefined);
   });
 
   it('throws if applied to null or undefined', function() {

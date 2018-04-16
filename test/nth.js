@@ -2,7 +2,7 @@ var assert = require('assert');
 
 var R = require('..');
 var eq = require('./shared/eq');
-
+var Reducible = require('./shared/Reducible');
 
 describe('nth', function() {
 
@@ -38,5 +38,13 @@ describe('nth', function() {
     assert.throws(function() { R.nth(0, null); }, TypeError);
     assert.throws(function() { R.nth(0, undefined); }, TypeError);
   });
+
+  it('operates on an iterable', function() {
+    eq(R.nth(0, new Reducible(list)), 'foo');
+    eq(R.nth(1, new Reducible(list)), 'bar');
+    eq(R.nth(2, new Reducible(list)), 'baz');
+    eq(R.nth(3, new Reducible(list)), 'quux');
+    eq(R.nth(4, new Reducible(list)), undefined);
+  })
 
 });

@@ -1,10 +1,12 @@
 import _curry2 from './internal/_curry2';
 import _isString from './internal/_isString';
+import _isArrayLike from './internal/_isArrayLike';
 
 
 /**
  * Returns the nth element of the given list or string. If n is negative the
  * element at index length + n is returned.
+ *
  *
  * @func
  * @memberOf R
@@ -28,8 +30,31 @@ import _isString from './internal/_isString';
  * @symb R.nth(0, [a, b, c]) = a
  * @symb R.nth(1, [a, b, c]) = b
  */
+
+var symIterator = (typeof Symbol !== 'undefined') ? Symbol.iterator : '@@iterator';
+
 var nth = _curry2(function nth(offset, list) {
-  var idx = offset < 0 ? list.length + offset : offset;
-  return _isString(list) ? list.charAt(idx) : list[idx];
+
+  if (_isString(list)) {
+    var idx = offset < 0 ? list.length + offset : offset;
+    return list.charAt(idx);
+  }
+
+  if (_isArrayLike(list)) {
+    var idx = offset < 0 ? list.length + offset : offset;
+    return list[idx];
+  }
+
+  if (list[symIterator] != null) {
+    var iter = list[symIterator]();
+    var step = iter.next();
+    for(var i=0; i < offset && !step.done; i++) {
+      step = iter.next();
+    }
+    return step.value;
+  }
+
+  return undefined;
 });
+
 export default nth;
